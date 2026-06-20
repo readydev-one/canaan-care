@@ -1,0 +1,4 @@
+sass --watch "C:\Users\Office PC 08\Desktop\Dropbox\Harun Pure\aleric\assets\scss\main.scss":"C:\Users\Office PC 08\Desktop\Dropbox\Harun Pure\aleric\assets\css\main.css"
+
+
+sass --watch "C:\Users\Admin\Dropbox\Harun Pure\aleric\assets\scss\main.scss":"C:\Users\Admin\Dropbox\Harun Pure\aleric\assets\css\main.css"
