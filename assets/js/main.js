@@ -205,42 +205,42 @@
 
 	////////////////////////////////////////////////////
 	// 06. Search Js
-	$(".tp-search-click").on("click", function () {
-		$(".tp-search-form-toggle,.tp-search-body-overlay").addClass("active");
-	});
+	// $(".tp-search-click").on("click", function () {
+	// 	$(".tp-search-form-toggle,.tp-search-body-overlay").addClass("active");
+	// });
 
-	$(".tp-search-close,.tp-search-body-overlay").on("click", function () {
-		$(".tp-search-form-toggle,.tp-search-body-overlay").removeClass("active");
-	});
+	// $(".tp-search-close,.tp-search-body-overlay").on("click", function () {
+	// 	$(".tp-search-form-toggle,.tp-search-body-overlay").removeClass("active");
+	// });
 
-	$(".cartmini-open-btn").on("click", function () {
-		$(".cartmini__area").addClass("cartmini-opened");
-		$(".body-overlay").addClass("apply");
-	});
+	// $(".cartmini-open-btn").on("click", function () {
+	// 	$(".cartmini__area").addClass("cartmini-opened");
+	// 	$(".body-overlay").addClass("apply");
+	// });
   
-	$(".cartmini-close-btn").on("click", function () {
-		$(".cartmini__area").removeClass("apply cartmini-opened");
-		$(".body-overlay").removeClass("apply");
-	});
+	// $(".cartmini-close-btn").on("click", function () {
+	// 	$(".cartmini__area").removeClass("apply cartmini-opened");
+	// 	$(".body-overlay").removeClass("apply");
+	// });
 
-	// 14. Close Handlers //
-	$(".cartmini-close-btn, .body-overlay, .tp-offcanvas-2-close-btn").on("click", function () {
-		$(".tp-search-area, .cartmini__area, .tp-offcanvas-2-area").removeClass("opened cartmini-opened");
-		$(".body-overlay").removeClass("opened");
-	});
+	// // 14. Close Handlers //
+	// $(".cartmini-close-btn, .body-overlay, .tp-offcanvas-2-close-btn").on("click", function () {
+	// 	$(".tp-search-area, .cartmini__area, .tp-offcanvas-2-area").removeClass("opened cartmini-opened");
+	// 	$(".body-overlay").removeClass("opened");
+	// });
 
-	// addClass removeClass //	
-	$('.tp-service-vp-wrap .tp-service-vp-item').on('mouseenter', function(){
-		$(this).addClass('active').parent().siblings().find('.tp-service-vp-item').removeClass('active')
-	}).on('mouseleave', function(){
-		$(this).addClass('active').parent().siblings().find('.tp-service-vp-item').addClass('active')
-	})
+	// // addClass removeClass //	
+	// $('.tp-service-vp-wrap .tp-service-vp-item').on('mouseenter', function(){
+	// 	$(this).addClass('active').parent().siblings().find('.tp-service-vp-item').removeClass('active')
+	// }).on('mouseleave', function(){
+	// 	$(this).addClass('active').parent().siblings().find('.tp-service-vp-item').addClass('active')
+	// })
 
-	$('.tp-offcanvas-2-area .tp-offcanvas-menu > nav > ul > li').on("mouseenter", function () {
-		$(this).addClass('is-active').siblings().removeClass('is-active');
-	}).on("mouseleave", function () {
-		$(this).siblings().addClass('is-active');
-	});
+	// $('.tp-offcanvas-2-area .tp-offcanvas-menu > nav > ul > li').on("mouseenter", function () {
+	// 	$(this).addClass('is-active').siblings().removeClass('is-active');
+	// }).on("mouseleave", function () {
+	// 	$(this).siblings().addClass('is-active');
+	// });
 
 
 	////////////////////////////////////////////////////
@@ -262,7 +262,7 @@
 	gsap.registerPlugin(ScrollTrigger, ScrollSmoother, ScrollToPlugin);
 	if($('#smooth-wrapper').length && $('#smooth-content').length){
 		ScrollSmoother.create({
-			smooth: 1.35,
+			smooth: 1,
 			effects: true,
 			smoothTouch: .1,
 			ignoreMobileResize: false
