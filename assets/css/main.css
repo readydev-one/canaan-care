@@ -27104,8 +27104,65 @@ html{
      scroll-padding-top: 100px;
 }
 
-@media (max-width:600px) {
+@media (max-width:999px) {
   .map-wrap {
     display: none;
   }
+}
+
+
+/* ABOUT PAGE */
+
+.about-container { max-width: 860px; margin: 0 auto; padding: 0 1.5rem; }
+
+.about-eyebrow {
+  display: inline-block; font-size: 13px; font-weight: 500;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  color: #185FA5; background: #E6F1FB;
+  padding: 4px 14px; border-radius: 20px; margin-bottom: 1.25rem;
+}
+
+.about-hero { padding: 3.5rem 0 2.5rem; border-bottom: 1px solid #eee; margin-bottom: 3rem; }
+.about-hero h1 { font-size: clamp(26px, 4vw, 36px); font-weight: 500; line-height: 1.25; margin: 0 0 1rem; }
+.about-hero-lead { font-size: 17px; line-height: 1.7; margin: 0; }
+
+.about-section { padding-bottom: 3rem; margin-bottom: 3rem; border-bottom: 1px solid #eee; }
+.about-section:last-child { border-bottom: none; }
+.about-section-label { font-size: 12px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: #888; margin: 0 0 0.5rem; }
+.about-section h2 { font-size: clamp(20px, 3vw, 26px); font-weight: 500; margin: 0 0 1.5rem; line-height: 1.3; }
+.about-section p { font-size: 17px; line-height: 1.75; margin: 0 0 1rem; }
+
+.about-section blockquote {
+  margin: 2rem 0; padding: 1.25rem 1.5rem;
+  border-left: 3px solid #378ADD; background: #E6F1FB;
+  border-radius: 0 8px 8px 0;
+}
+.about-section blockquote p { font-size: 17px; font-style: italic; margin: 0; }
+
+.about-values-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; margin-top: 1.5rem; }
+.about-value-card { border: 1px solid #eee; border-radius: 12px; padding: 1.25rem; }
+.about-value-icon { width: 40px; height: 40px; background: #E6F1FB; border-radius: 10px; display: flex; align-items: center; justify-content: center; margin-bottom: 0.85rem; }
+.about-value-icon svg { width: 20px; height: 20px; fill: none; stroke: #185FA5; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.about-value-title { font-size: 15px; font-weight: 500; margin: 0 0 0.4rem; }
+.about-value-desc { font-size: 14px; line-height: 1.6; margin: 0; }
+
+.about-why-list { display: flex; flex-direction: column; gap: 1.25rem; margin-top: 1.5rem; }
+.about-why-item { display: flex; gap: 1rem; align-items: flex-start; }
+.about-why-check { flex-shrink: 0; width: 24px; height: 24px; background: #EAF3DE; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-top: 2px; }
+.about-why-check svg { width: 13px; height: 13px; fill: none; stroke: #3B6D11; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+.about-why-text { display: flex; flex-direction: column; gap: 3px; }
+.about-why-text strong { font-size: 16px; font-weight: 500; }
+.about-why-text span { font-size: 17px; line-height: 1.65; }
+
+@media (max-width: 600px) {
+  .about-container { padding: 0 1rem; }
+  .about-hero { padding: 2rem 0 1.75rem; margin-bottom: 2rem; }
+  .about-section { padding-bottom: 2rem; margin-bottom: 2rem; }
+  .about-values-grid { grid-template-columns: 1fr 1fr; }
+  .about-why-text span { font-size: 15px; }
+  blockquote { padding: 1rem 1.25rem; }
+}
+
+@media (max-width: 400px) {
+  .about-values-grid { grid-template-columns: 1fr; }
 }
