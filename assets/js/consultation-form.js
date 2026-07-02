@@ -1,15 +1,26 @@
 // ---- CONFIG: replace with your own EmailJS values ----
 const EMAILJS_PUBLIC_KEY        = "63jyhOgggx-EvPEAR";
 const EMAILJS_SERVICE_ID        = "service_mc2q2lb";
-const EMAILJS_TEMPLATE_ID_ADMIN = "template_193n305";        // shared across both forms
+const EMAILJS_TEMPLATE_ID_ADMIN = "template_193n305"; // shared across both forms
 const EMAILJS_TEMPLATE_ID_USER  = "template_6e7o9li"; // shared across both forms
 
-// Initialize EmailJS once the SDK script has loaded
-if (window.emailjs) {
-  emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
-} else {
-  console.error("EmailJS SDK not found. Make sure the CDN script tag is included before this file.");
+// Track whether init() has actually succeeded, so we can retry it lazily
+// instead of only trying once at parse time (which fails silently if the
+// EmailJS CDN <script> tag hasn't finished loading yet when this file runs).
+let emailjsReady = false;
+
+function ensureEmailjsInitialized() {
+  if (emailjsReady) return true;
+  if (window.emailjs && typeof emailjs.init === 'function') {
+    emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
+    emailjsReady = true;
+    return true;
+  }
+  return false;
 }
+
+// Try immediately in case the SDK is already loaded...
+ensureEmailjsInitialized();
 
 function scrollToForm(e) {
   e.preventDefault();
@@ -163,6 +174,31 @@ function submitForm() {
   var submitBtn = document.querySelector('#panel2 .btn-next');
   var originalLabel = submitBtn ? submitBtn.textContent : '';
 
+  function resetButton() {
+    if (submitBtn) {
+      submitBtn.disabled = false;
+      submitBtn.textContent = originalLabel;
+    }
+  }
+
+  function fail(err) {
+    console.error('EmailJS send failed:', err);
+    announce('Something went wrong sending your request. Please try again or contact us directly.');
+    alert('Sorry, something went wrong sending your request. Please try again or contact us directly.');
+    resetButton();
+  }
+
+  // Guard against missing/uninitialized SDK so we fail fast instead of
+  // throwing synchronously (which would skip .catch/.finally below and
+  // leave the button stuck on "Sending…" forever). This also retries
+  // init() here in case the CDN script finished loading after this file
+  // ran, which otherwise causes a confusing "Public Key is invalid" error
+  // even though the key is correct.
+  if (!ensureEmailjsInitialized()) {
+    fail(new Error('EmailJS SDK is not loaded/initialized.'));
+    return;
+  }
+
   var data = {
     who: document.querySelector('input[name="who"]:checked')
            ? document.querySelector('input[name="who"]:checked').value
@@ -179,23 +215,22 @@ function submitForm() {
     submitBtn.textContent = 'Sending…';
   }
 
-  Promise.all([
-    emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID_ADMIN, data), // to admin
-    emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID_USER, data)   // to customer
-  ])
-    .then(function() {
-      fillSummary();
-      setStep(3);
-    })
-    .catch(function(err) {
-      console.error('EmailJS send failed:', err);
-      announce('Something went wrong sending your request. Please try again or contact us directly.');
-      alert('Sorry, something went wrong sending your request. Please try again or contact us directly.');
-    })
-    .finally(function() {
-      if (submitBtn) {
-        submitBtn.disabled = false;
-        submitBtn.textContent = originalLabel;
-      }
-    });
+  // Wrap the emailjs.send() calls themselves in a try/catch: some SDK
+  // versions/configs (e.g. placeholder IDs) throw synchronously rather
+  // than returning a rejected promise, which would otherwise bypass
+  // .catch/.finally entirely and freeze the UI on "Sending…".
+  try {
+    Promise.all([
+      emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID_ADMIN, data), // to admin
+      emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID_USER, data)   // to customer
+    ])
+      .then(function() {
+        resetButton();
+        fillSummary();
+        setStep(3);
+      })
+      .catch(fail);
+  } catch (err) {
+    fail(err);
+  }
 }
