@@ -1,4 +1,15 @@
+// ---- CONFIG: replace with your own EmailJS values ----
+const EMAILJS_PUBLIC_KEY        = "63jyhOgggx-EvPEAR";
+const EMAILJS_SERVICE_ID        = "service_mc2q2lb";
+const EMAILJS_TEMPLATE_ID_ADMIN = "template_193n305";        // shared across both forms
+const EMAILJS_TEMPLATE_ID_USER  = "template_6e7o9li"; // shared across both forms
 
+// Initialize EmailJS once the SDK script has loaded
+if (window.emailjs) {
+  emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
+} else {
+  console.error("EmailJS SDK not found. Make sure the CDN script tag is included before this file.");
+}
 
 function scrollToForm(e) {
   e.preventDefault();
@@ -66,6 +77,14 @@ function goStep(n) {
     if (currentStep === 1 && !validateStep1()) return;
     if (currentStep === 2 && !validateStep2()) return;
   }
+
+  // Moving from step 2 into step 3 means the form is complete: submit it
+  // via EmailJS first, and only advance the UI once that succeeds.
+  if (n === 3 && currentStep === 2) {
+    submitForm();
+    return; // submitForm() calls fillSummary() + setStep(3) on success
+  }
+
   if (n === 3) fillSummary();
   setStep(n);
 }
@@ -139,3 +158,44 @@ function fillSummary() {
   document.getElementById('sum-phone').textContent = document.getElementById('inp-phone').value.trim() || '—';
 }
 
+// ---- Submit via EmailJS, then advance to the summary step ----
+function submitForm() {
+  var submitBtn = document.querySelector('#panel2 .btn-next');
+  var originalLabel = submitBtn ? submitBtn.textContent : '';
+
+  var data = {
+    who: document.querySelector('input[name="who"]:checked')
+           ? document.querySelector('input[name="who"]:checked').value
+           : '',
+    care_type: document.getElementById('care-type').value,
+    name: document.getElementById('inp-name').value.trim(),
+    email: document.getElementById('inp-email').value.trim(),
+    phone: document.getElementById('inp-phone').value.trim(),
+    message: document.getElementById('inp-msg') ? document.getElementById('inp-msg').value.trim() : ''
+  };
+
+  if (submitBtn) {
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Sending…';
+  }
+
+  Promise.all([
+    emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID_ADMIN, data), // to admin
+    emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID_USER, data)   // to customer
+  ])
+    .then(function() {
+      fillSummary();
+      setStep(3);
+    })
+    .catch(function(err) {
+      console.error('EmailJS send failed:', err);
+      announce('Something went wrong sending your request. Please try again or contact us directly.');
+      alert('Sorry, something went wrong sending your request. Please try again or contact us directly.');
+    })
+    .finally(function() {
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalLabel;
+      }
+    });
+}
