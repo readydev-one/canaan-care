@@ -1,26 +1,8 @@
-// ---- CONFIG: replace with your own EmailJS values ----
 const EMAILJS_PUBLIC_KEY        = "63jyhOgggx-EvPEAR";
 const EMAILJS_SERVICE_ID        = "service_mc2q2lb";
 const EMAILJS_TEMPLATE_ID_ADMIN = "template_193n305"; // shared across both forms
 const EMAILJS_TEMPLATE_ID_USER  = "template_6e7o9li"; // shared across both forms
 
-// Track whether init() has actually succeeded, so we can retry it lazily
-// instead of only trying once at parse time (which fails silently if the
-// EmailJS CDN <script> tag hasn't finished loading yet when this file runs).
-let emailjsReady = false;
-
-function ensureEmailjsInitialized() {
-  if (emailjsReady) return true;
-  if (window.emailjs && typeof emailjs.init === 'function') {
-    emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
-    emailjsReady = true;
-    return true;
-  }
-  return false;
-}
-
-// Try immediately in case the SDK is already loaded...
-ensureEmailjsInitialized();
 
 function scrollToForm(e) {
   e.preventDefault();
@@ -88,17 +70,15 @@ function goStep(n) {
     if (currentStep === 1 && !validateStep1()) return;
     if (currentStep === 2 && !validateStep2()) return;
   }
-
-  // Moving from step 2 into step 3 means the form is complete: submit it
-  // via EmailJS first, and only advance the UI once that succeeds.
-  if (n === 3 && currentStep === 2) {
-    submitForm();
-    return; // submitForm() calls fillSummary() + setStep(3) on success
+  if (n === 3) {
+    fillSummary();
+    setStep(3);
+    sendEnquiry();
+    return;
   }
-
-  if (n === 3) fillSummary();
   setStep(n);
 }
+
 
 function validateStep1() {
   var ok = true;
@@ -160,6 +140,41 @@ function validateStep2() {
   return ok;
 }
 
+function sendEnquiry() {
+  var who   = document.querySelector('input[name="who"]:checked');
+  var care  = document.getElementById('care-type').value;
+  var name  = document.getElementById('inp-name').value.trim();
+  var email = document.getElementById('inp-email').value.trim();
+  var phone = document.getElementById('inp-phone').value.trim();
+  var msg   = document.getElementById('inp-msg').value.trim();
+
+  var submissionDate = new Date().toLocaleString('en-US', {
+    dateStyle: 'medium',
+    timeStyle: 'short'
+  });
+
+  var templateParams = {
+    client_name:     name,
+    phone:           phone,
+    email:           email,
+    Who:             who ? who.value : '—',
+    service:         care || '—',
+    submission_date: submissionDate,
+    message:         msg || '—'
+  };
+
+  emailjs.init(EMAILJS_PUBLIC_KEY);
+
+  emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID_ADMIN, templateParams)
+    .then(function() {
+      return emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID_USER, templateParams);
+    })
+    .catch(function(err) {
+      console.error('EmailJS error:', err);
+      announce('Something went wrong sending your enquiry. Please contact us directly.');
+    });
+}
+
 function fillSummary() {
   var who = document.querySelector('input[name="who"]:checked');
   document.getElementById('sum-who').textContent   = who ? who.value : '—';
@@ -169,68 +184,3 @@ function fillSummary() {
   document.getElementById('sum-phone').textContent = document.getElementById('inp-phone').value.trim() || '—';
 }
 
-// ---- Submit via EmailJS, then advance to the summary step ----
-function submitForm() {
-  var submitBtn = document.querySelector('#panel2 .btn-next');
-  var originalLabel = submitBtn ? submitBtn.textContent : '';
-
-  function resetButton() {
-    if (submitBtn) {
-      submitBtn.disabled = false;
-      submitBtn.textContent = originalLabel;
-    }
-  }
-
-  function fail(err) {
-    console.error('EmailJS send failed:', err);
-    announce('Something went wrong sending your request. Please try again or contact us directly.');
-    alert('Sorry, something went wrong sending your request. Please try again or contact us directly.');
-    resetButton();
-  }
-
-  // Guard against missing/uninitialized SDK so we fail fast instead of
-  // throwing synchronously (which would skip .catch/.finally below and
-  // leave the button stuck on "Sending…" forever). This also retries
-  // init() here in case the CDN script finished loading after this file
-  // ran, which otherwise causes a confusing "Public Key is invalid" error
-  // even though the key is correct.
-  if (!ensureEmailjsInitialized()) {
-    fail(new Error('EmailJS SDK is not loaded/initialized.'));
-    return;
-  }
-
-  var data = {
-    who: document.querySelector('input[name="who"]:checked')
-           ? document.querySelector('input[name="who"]:checked').value
-           : '',
-    care_type: document.getElementById('care-type').value,
-    name: document.getElementById('inp-name').value.trim(),
-    email: document.getElementById('inp-email').value.trim(),
-    phone: document.getElementById('inp-phone').value.trim(),
-    message: document.getElementById('inp-msg') ? document.getElementById('inp-msg').value.trim() : ''
-  };
-
-  if (submitBtn) {
-    submitBtn.disabled = true;
-    submitBtn.textContent = 'Sending…';
-  }
-
-  // Wrap the emailjs.send() calls themselves in a try/catch: some SDK
-  // versions/configs (e.g. placeholder IDs) throw synchronously rather
-  // than returning a rejected promise, which would otherwise bypass
-  // .catch/.finally entirely and freeze the UI on "Sending…".
-  try {
-    Promise.all([
-      emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID_ADMIN, data), // to admin
-      emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID_USER, data)   // to customer
-    ])
-      .then(function() {
-        resetButton();
-        fillSummary();
-        setStep(3);
-      })
-      .catch(fail);
-  } catch (err) {
-    fail(err);
-  }
-}
