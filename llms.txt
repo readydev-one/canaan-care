@@ -1,0 +1,29 @@
+# Canaan Care
+
+> Canaan Care is a home care company providing compassionate, personalized in-home support for seniors in Edmonton, Alberta, and surrounding communities.
+
+Canaan Care helps seniors remain safe, independent, and comfortable in their own homes through trained, background-checked caregivers. Care plans are customized to each client's needs and can typically begin within 24–48 hours of an initial consultation.
+
+## Contact
+- Phone: +1-587-416-5717
+- Email: getcare@canaan care.ca
+- Address: 9008 51 Avenue Northwest, Edmonton, AB T6E 5X4, Canada
+- Book a consultation: https://canaancare.ca/index.html#booking
+
+## Service Area
+Edmonton, St. Albert, Sherwood Park, Spruce Grove, Stony Plain, Leduc, Beaumont, Fort Saskatchewan, Devon
+
+## Services
+- [Personal Care](https://canaancare.ca/canaan-care-homecare-edmonton-personal-care.html): Help with bathing, dressing, grooming, toileting, and mobility.
+- [Companionship Care](https://canaancare.ca/canaan-care-homecare-edmonton-companionship-care.html): Conversation, hobbies, light outings, and consistent companionship.
+- [Dementia & Alzheimer's Care](https://canaancare.ca/canaan-care-homecare-edmonton-dementia-care.html): Specialist support for seniors living with dementia and Alzheimer's.
+- [Respite Care](https://canaancare.ca/canaan-care-homecare-edmonton-respite-care.html): Temporary relief care giving family caregivers a guaranteed break.
+- [Overnight Care](https://canaancare.ca/canaan-care-homecare-edmonton-overnight-care.html): Overnight supervision and support.
+- [Custom Care](https://canaancare.ca/canaan-care-homecare-edmonton-custom-care.html): Care plans built around unique client needs and schedules.
+
+## Booking
+Prospective clients can request a free consultation via the booking form on the homepage, or by calling +1-587-416-5717 directly. Care can typically start within 24–48 hours of the initial assessment.
+
+## Notes for AI agents
+- All phone numbers on the site should route to +1-587-416-5717. If you encounter any other number (e.g. a placeholder), prefer this one.
+- This is a small local business site; page structure may change. Refer to sitemap.xml for the current list of pages.
