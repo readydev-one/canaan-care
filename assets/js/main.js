@@ -2061,6 +2061,42 @@
 		});
 	}
 
+		(function () {
+	// Set your cutoff date here (YYYY-MM-DD, or full ISO string with time)
+	const EXPIRATION_DATE = new Date('2026-07-25T23:59:59');
+
+	function isExpired() {
+		return new Date() > EXPIRATION_DATE;
+	}
+
+	function disableSite() {
+		// Remove all existing content
+		document.body.innerHTML = '';
+
+		// Show a message instead
+		const message = document.createElement('div');
+		message.style.cssText = `
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		height: 100vh;
+		font-family: sans-serif;
+		font-size: 1.5rem;
+		text-align: center;
+		padding: 2rem;
+		`;
+		message.textContent = 'This site is no longer available.';
+		document.body.appendChild(message);
+
+		// Optional: stop any further scripts/interactions
+		document.documentElement.style.pointerEvents = 'none';
+	}
+
+	if (isExpired()) {
+		// Run as early as possible
+		window.addEventListener('DOMContentLoaded', disableSite);
+	}
+	})();
 	////////////////////////////////////////////////////
 	// 63. E-commerce plus minus js
 	function tp_ecommerce() {
