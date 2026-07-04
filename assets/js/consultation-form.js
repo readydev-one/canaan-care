@@ -1,4 +1,4 @@
-const EMAILJS_PUBLIC_KEY        = "63jyhOgggx-EvPEAR";
+const EMAILJS_PUBLIC_KEY        = "d7dLHQ7OQBocj0xKT";
 const EMAILJS_SERVICE_ID        = "service_mc2q2lb";
 const EMAILJS_TEMPLATE_ID_ADMIN = "template_193n305"; // shared across both forms
 const EMAILJS_TEMPLATE_ID_USER  = "template_6e7o9li"; // shared across both forms
